@@ -1,0 +1,68 @@
+service: server
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Resource: "*"
+          Action:
+            - 's3:*'
+            - rekognition:DetectText
+            - lambda:InvokeFunction
+            - lambda:InvokeAsync
+        - Effect: "Allow"
+          Action:
+            - 'dynamodb:*'
+          Resource: '*'
+
+resources:
+  Resources:
+    # remove api gateway cors error section
+    GatewayResponseDefault4XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+    # ----
+    S3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:some.s3.bucket}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - PUT
+                - GET
+                - DELETE
+                - POST
+              AllowedOrigins:
+                - '*'
+    BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref S3Bucket
+        PolicyDocument:
+          Statement:
+            - Action:
+                - s3:ListBucket
+                - s3:GetObject
+                - s3:PutObject
+                - s3:DeleteObject
+              Resource:
+                - arn:aws:s3:::${self:some.s3.bucket}/*
+                - arn:aws:s3:::${self:some.s3.bucket}
+              Effect: Allow
+              Principal: '*'
+
+functions:
+  
