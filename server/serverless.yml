@@ -1,6 +1,11 @@
 service: server
 frameworkVersion: '3'
 
+files:
+  register: handlers/authentication/register.handler
+  login: handlers/authentication/login.handler
+
+
 provider:
   name: aws
   runtime: nodejs18.x
@@ -10,10 +15,15 @@ provider:
         - Effect: "Allow"
           Resource: "*"
           Action:
-            - 's3:*'
-            - rekognition:DetectText
+            - s3:*
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
             - lambda:InvokeFunction
-            - lambda:InvokeAsync
+            - rekognition:CompareFaces
         - Effect: "Allow"
           Action:
             - 'dynamodb:*'
@@ -65,4 +75,7 @@ resources:
               Principal: '*'
 
 functions:
+  login:
+    handler: ${self:files.login}
+    
   
