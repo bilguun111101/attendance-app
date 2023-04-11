@@ -5,11 +5,13 @@ files:
   register: handlers/authentication/register.handler
   login: handlers/authentication/login.handler
   signup: handlers/authentication/signup.handler
+  createApproachUrl: handlers/createApproachUrl.handler
 
 # some variables
 some:
   s3:
     bucket: leaf3bbbilguun0426
+    bucketAttendance: leaf3bbbilguun0426attendance
 
 
 provider:
@@ -52,6 +54,21 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:some.s3.bucket}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - PUT
+                - GET
+                - DELETE
+                - POST
+              AllowedOrigins:
+                - '*'
+    S3BucketAttendance:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:some.s3.bucketAttendance}
         CorsConfiguration:
           CorsRules:
             - AllowedHeaders:

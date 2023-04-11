@@ -14,6 +14,8 @@ export const RegisterModal = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [windowImage, setWindowImage] = useState('');
+    const [selectedFile, setSelectedFile] = useState("");
 
     const onToggle = useCallback(() => {
         if (isLoading) return;
@@ -34,20 +36,14 @@ export const RegisterModal = () => {
             setIsLoading(true);
             await axios({
                 method: 'POST',
-                url: 'https://1ecxbe7mfc.execute-api.us-east-1.amazonaws.com/dev/signup',
+                url: 'https://obz850tlyf.execute-api.us-east-1.amazonaws.com/dev/signup',
                 data: {
-                  email,
-                  username,
-                  password
+                    email,
+                    username,
+                    password
                 },
             })
-
             toast.success('Account created.');
-
-            // signIn('credentials', {
-            //     email,
-            //     password
-            // });
 
             registerModal.onClose();
         } catch (error) {
@@ -57,6 +53,13 @@ export const RegisterModal = () => {
             setIsLoading(false);
         }
     }, [registerModal, email, password, username])
+
+    const handleImage = (target: any) => {
+        if(!target.files) return;
+        const file = target.files[0];
+        setSelectedFile(file);
+        setWindowImage(URL.createObjectURL(file));
+    }
 
     const bodyContent = (
         <div className="flex flex-col gap-4">
@@ -111,6 +114,8 @@ export const RegisterModal = () => {
             onSubmit={onSubmit}
             body={bodyContent} 
             footer={footerContent}
+            upload="upload"
+            uploadOnClick={handleImage}
         />
     );
 }

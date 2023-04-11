@@ -3,25 +3,29 @@ import { AiOutlineClose } from "react-icons/ai";
 import { FC, ReactElement, useCallback } from "react";
 
 interface ModalProps {
+    title?: string;
+    upload?: string;
     isOpen?: boolean;
+    disabled?: boolean;
+    actionLabel: string;
+    body?: ReactElement;
     onClose: () => void;
     onSubmit: () => void;
-    title?: string;
-    body?: ReactElement;
     footer?: ReactElement;
-    actionLabel: string;
-    disabled?: boolean;
+    uploadOnClick?: any;
 }
 
 export const Modal: FC<ModalProps> = ({
     body,
     title,
     footer,
+    upload,
     isOpen,
     onClose,
     onSubmit,
     disabled,
     actionLabel,
+    uploadOnClick
 }) => {
     const handleClose = useCallback(() => {
         if (disabled) {
@@ -121,6 +125,36 @@ export const Modal: FC<ModalProps> = ({
                                 large
                                 onClick={handleSubmit}
                             />
+                            {
+                                upload ?
+                                    <label 
+                                        htmlFor={upload} 
+                                        className="
+                                            disabled:opacity-70 
+                                            disabled:cursor-now-allowed 
+                                            rounded-full 
+                                            font-semibold 
+                                            hover:opacity-80 
+                                            transition 
+                                            border-2 
+                                            px-5
+                                            py-3
+                                            bg-white
+                                            flex 
+                                            justify-center
+                                            text-xl
+                                            cursor-pointer
+                                        ">
+                                            <input 
+                                                type="file" 
+                                                disabled={disabled}
+                                                onChange={({ target }) => uploadOnClick(target)}
+                                            />
+                                            { upload }
+                                    </label>
+                                        :
+                                    null
+                            }
                             { footer }
                         </div>
                     </div>

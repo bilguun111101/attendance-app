@@ -1,5 +1,5 @@
 const { DynamoDB } = require('@aws-sdk/client-dynamodb');
-const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
+const { marshall } = require('@aws-sdk/util-dynamodb');
 
 const bcrypt = require('bcryptjs');
 const db = new DynamoDB();
@@ -7,12 +7,14 @@ const db = new DynamoDB();
 exports.handler = async(event) => {
     const {
         email,
-        password,
+        userId,
         username,
+        password,
     } = JSON.parse(event.body);
     const hash = bcrypt.hashSync(password, 12);
     const user = marshall({
         email,
+        userId,
         username,
         password: hash
     });

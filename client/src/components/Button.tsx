@@ -1,13 +1,13 @@
 import { FC } from "react";
 
 interface ButtonProps {
-    label: string;
+    label: string | any;
     large?: boolean;
     outline?: boolean;
     disabled?: boolean;
     secondary?: boolean;
     fullWidth?: boolean;
-    onClick: () => void;
+    onClick?: () => void;
 }
 
 export const Button: FC<ButtonProps> = ({
