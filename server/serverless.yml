@@ -4,6 +4,12 @@ frameworkVersion: '3'
 files:
   register: handlers/authentication/register.handler
   login: handlers/authentication/login.handler
+  signup: handlers/authentication/signup.handler
+
+# some variables
+some:
+  s3:
+    bucket: leaf3bbbilguun0426
 
 
 provider:
@@ -77,5 +83,22 @@ resources:
 functions:
   login:
     handler: ${self:files.login}
-    
-  
+    events:
+      - http:
+          path: login
+          method: post
+          cors: true
+  signup:
+    handler: ${self:files.signup}
+    events:
+      - http:
+          path: signup
+          method: post
+          cors: true
+  createApproachUrl:
+    handler: ${self:files.createApproachUrl}
+    events:
+      - http:
+          path: url
+          method: post
+          cors: true
