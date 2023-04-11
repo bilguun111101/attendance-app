@@ -14,6 +14,7 @@ export const RegisterModal = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [approachUrl, setApproachUrl] = useState('');
     const [windowImage, setWindowImage] = useState('');
     const [selectedFile, setSelectedFile] = useState("");
 
@@ -34,15 +35,17 @@ export const RegisterModal = () => {
         }
         try {
             setIsLoading(true);
-            await axios({
+
+            const response = await axios({
                 method: 'POST',
                 url: 'https://obz850tlyf.execute-api.us-east-1.amazonaws.com/dev/signup',
                 data: {
                     email,
                     username,
                     password
-                },
+                }
             })
+            console.log(response.data);
             toast.success('Account created.');
 
             registerModal.onClose();
@@ -54,12 +57,28 @@ export const RegisterModal = () => {
         }
     }, [registerModal, email, password, username])
 
-    const handleImage = (target: any) => {
+    const handleImage = async(target: any) => {
         if(!target.files) return;
         const file = target.files[0];
+        // setWindowImage(URL.createObjectURL(file));
+        if(!file) return;
+        // const response = await axios({
+        //     method: 'POST',
+        //     url: 'https://ecx00kuntd.execute-api.us-east-1.amazonaws.com/dev/url',
+        //     data: {
+        //         Key: file.name,
+        //         ContentType: file.type
+        //     }
+        // })
+        const response = await axios.post('https://t4o2577tg3.execute-api.us-east-1.amazonaws.com/dev/url', {
+            Key: file.name,
+            ContentType: file.type
+        })
+        toast.success('responsed url!!!')
+        console.log(response.data);
         setSelectedFile(file);
-        setWindowImage(URL.createObjectURL(file));
     }
+
 
     const bodyContent = (
         <div className="flex flex-col gap-4">
