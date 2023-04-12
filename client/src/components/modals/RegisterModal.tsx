@@ -17,7 +17,6 @@ export const RegisterModal = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [userID, setUserID] = useState<string>('');
     const [approachUrl, setApproachUrl] = useState('');
-    const [windowImage, setWindowImage] = useState('');
     const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
 
     const onToggle = useCallback(() => {
@@ -35,7 +34,7 @@ export const RegisterModal = () => {
             toast.error('Your confirm password is wrong!!!');
             return;
         }
-        if(!selectedFile && approachUrl) {
+        if(!selectedFile && !approachUrl) {
             toast.error('You have to choose file!!!');
             return;
         };
@@ -45,16 +44,19 @@ export const RegisterModal = () => {
                 method: 'PUT',
                 body: selectedFile
             })
-            await axios({
+            const response = await fetch('https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/register', {
                 method: 'POST',
-                url: 'https://t4o2577tg3.execute-api.us-east-1.amazonaws.com/dev/register',
-                data: {
+                body: JSON.stringify({
                     email,
                     userID,
                     username,
                     password
-                }
+                })
             })
+            setEmail('');
+            setUserID('');
+            setUsername('');
+            setPassword('');
             toast.success('Account created.');
             registerModal.onClose();
         } catch (error) {
@@ -71,7 +73,7 @@ export const RegisterModal = () => {
         if(!file) return;
         const userId = uuidv4();
         const newFile = new File([file], `${userId}.${file.name.split('.').at(-1)}`, { type: file.type });
-        const response = await axios.post('https://t4o2577tg3.execute-api.us-east-1.amazonaws.com/dev/url', {
+        const response = await axios.post('https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/url', {
             Key: newFile.name,
             ContentType: newFile.type
         });
