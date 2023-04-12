@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Modal } from "../Modal";
 import { Input } from "../Input";
+import { v4 as uuidv4 } from 'uuid';
 import toast from "react-hot-toast";
 import { useCallback, useState } from "react";
 import { useLogInModal, useRegisterModal } from "@/hooks";
@@ -14,9 +15,10 @@ export const RegisterModal = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [userID, setUserID] = useState<string>('');
     const [approachUrl, setApproachUrl] = useState('');
     const [windowImage, setWindowImage] = useState('');
-    const [selectedFile, setSelectedFile] = useState("");
+    const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
 
     const onToggle = useCallback(() => {
         if (isLoading) return;
@@ -33,21 +35,27 @@ export const RegisterModal = () => {
             toast.error('Your confirm password is wrong!!!');
             return;
         }
+        if(!selectedFile && approachUrl) {
+            toast.error('You have to choose file!!!');
+            return;
+        };
         try {
             setIsLoading(true);
-
-            const response = await axios({
+            await fetch(approachUrl, {
+                method: 'PUT',
+                body: selectedFile
+            })
+            await axios({
                 method: 'POST',
-                url: 'https://obz850tlyf.execute-api.us-east-1.amazonaws.com/dev/signup',
+                url: 'https://t4o2577tg3.execute-api.us-east-1.amazonaws.com/dev/register',
                 data: {
                     email,
+                    userID,
                     username,
                     password
                 }
             })
-            console.log(response.data);
             toast.success('Account created.');
-
             registerModal.onClose();
         } catch (error) {
             console.log(error)
@@ -55,29 +63,23 @@ export const RegisterModal = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [registerModal, email, password, username])
+    }, [registerModal, email, password, username, approachUrl, selectedFile])
 
     const handleImage = async(target: any) => {
         if(!target.files) return;
         const file = target.files[0];
-        // setWindowImage(URL.createObjectURL(file));
         if(!file) return;
-        // const response = await axios({
-        //     method: 'POST',
-        //     url: 'https://ecx00kuntd.execute-api.us-east-1.amazonaws.com/dev/url',
-        //     data: {
-        //         Key: file.name,
-        //         ContentType: file.type
-        //     }
-        // })
+        const userId = uuidv4();
+        const newFile = new File([file], `${userId}.${file.name.split('.').at(-1)}`, { type: file.type });
         const response = await axios.post('https://t4o2577tg3.execute-api.us-east-1.amazonaws.com/dev/url', {
-            Key: file.name,
-            ContentType: file.type
-        })
-        toast.success('responsed url!!!')
-        console.log(response.data);
-        setSelectedFile(file);
-    }
+            Key: newFile.name,
+            ContentType: newFile.type
+        });
+        setUserID(userId);
+        setSelectedFile(newFile);
+        setApproachUrl(response.data);
+        toast.success('uploaded!!!');
+    };
 
 
     const bodyContent = (

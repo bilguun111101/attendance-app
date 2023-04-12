@@ -49,6 +49,15 @@ resources:
         ResponseType: DEFAULT_4XX
         RestApiId:
           Ref: 'ApiGatewayRestApi'
+    # GatewayResponseDefault5XX:
+    #   Type: 'AWS::ApiGateway::GatewayResponse'
+    #   Properties:
+    #     ResponseParameters:
+    #       gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+    #       gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+    #     ResponseType: DEFAULT_5XX
+    #     RestApiId:
+    #       Ref: 'ApiGatewayRestApi'
     # ----
     S3Bucket:
       Type: AWS::S3::Bucket
@@ -105,11 +114,11 @@ functions:
           path: login
           method: post
           cors: true
-  signup:
-    handler: ${self:files.signup}
+  register:
+    handler: ${self:files.register}
     events:
       - http:
-          path: signup
+          path: register
           method: post
           cors: true
   createApproachUrl:

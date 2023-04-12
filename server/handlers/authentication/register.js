@@ -18,9 +18,8 @@ exports.handler = async(event) => {
         username,
         password: hash
     });
-    const response = await db.putItem({
-        TableName: '',
+    await db.putItem({
+        TableName: 'Attendance',
         Item: user
     });
-    return response;
 }
