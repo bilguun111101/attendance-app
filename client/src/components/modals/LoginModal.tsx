@@ -26,8 +26,13 @@ export const LoginModal = () => {
         //     return;
         // }
         try {
-            const response = await axios.post("https://1ecxbe7mfc.execute-api.us-east-1.amazonaws.com/dev/login", { email, password })
-            console.log(response);
+            // const response = await axios.post("https://1ecxbe7mfc.execute-api.us-east-1.amazonaws.com/dev/login", { email, password })
+            const response = await fetch('https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/login', {
+                method: 'POST',
+                body: JSON.stringify({ email, password })
+            })
+            // console.log(response.json());
+            response.json().then((data) => console.log(data));
             setIsLoading(true);
             loginModal.onClose();
         } catch (error) { console.log(error) } finally {

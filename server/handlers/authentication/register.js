@@ -7,19 +7,38 @@ const db = new DynamoDB();
 exports.handler = async(event) => {
     const {
         email,
-        userId,
+        userID,
         username,
         password,
     } = JSON.parse(event.body);
-    const hash = bcrypt.hashSync(password, 12);
-    const user = marshall({
-        email,
-        userId,
-        username,
-        password: hash
-    });
-    await db.putItem({
-        TableName: 'Attendance',
-        Item: user
-    });
+    try {
+        const hash = bcrypt.hashSync(password, 12);
+        const user = marshall({
+            email,
+            userID,
+            username,
+            password: hash
+        });
+        const response = await db.putItem({
+            TableName: 'Attendance',
+            Item: user
+        });
+        return {
+            statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': '*',
+            },
+            body: JSON.stringify({ message: response.$metadata }),
+        }
+    } catch (error) {
+        return {
+            statusCode: 402,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': '*',
+            },
+            body: JSON.stringify({ message: error.message })
+        }
+    }
 }
