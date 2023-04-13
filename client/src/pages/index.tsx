@@ -56,10 +56,18 @@ export default function Home() {
       method: 'PUT',
       body: JSON.stringify(newFile)
     })
-    const response = await axios.post('', {
-      Name: newFile.name
+    // const response = await axios.post('https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/face', {
+    //   Name: newFile.name
+    // })
+    const response = await fetch("https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/face", {
+      method: 'POST',
+      body: JSON.stringify({
+        Name: newFile.name
+      })
     })
-    console.log(response);
+    // console.log(response.json());
+    const result = await response.json();
+    console.log(result);
 };
 
   return (
@@ -77,7 +85,7 @@ export default function Home() {
               <div className="flex gap-4 flex-wrap justify-center">
                   <Button label={isRecording ? "stop cam" : 'open cam'} onClick={isRecording ? stopCam : openCam} secondary={true} />
                   <Button label="screenshot" onClick={capture} secondary={true} />
-                  <input type="file"  />
+                  <input type="file" onChange={({ target }) => handleImage(target)} />
               </div>
           </div>
       </div>
