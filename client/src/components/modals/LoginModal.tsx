@@ -3,12 +3,19 @@ import { Modal } from "../Modal";
 import { Input } from "../Input";
 import { toast } from "react-hot-toast";
 import { useCallback, useState } from "react";
-import { useCurrentUser, useLogInModal, useRegisterModal } from "@/hooks";
+import { useLogInModal, useRegisterModal } from "@/hooks";
+import { useCurrentUser } from "@/context";
 
 export const LoginModal = () => {
     const loginModal = useLogInModal();
-    const currentUser = useCurrentUser();
     const registerModal = useRegisterModal();
+
+    const {
+        setIsSignedIn,
+        setEmail: Email,
+        setUserID: UserID,
+        setUsername: Username,
+    } = useCurrentUser();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -32,10 +39,12 @@ export const LoginModal = () => {
                 body: JSON.stringify({ email, password })
             })
             const { username, email: userEmail, userID } = await response.json();
-            currentUser.onUserID(userID);
-            currentUser.onEmail(userEmail);
-            currentUser.onUsername(username);
+            
+            UserID(userID);
+            Email(userEmail);
+            Username(username);
             setIsLoading(true);
+            setIsSignedIn(true);
             toast.success('You signed in!!!');
             loginModal.onClose();
         } catch (error) { console.log(error) } finally {
