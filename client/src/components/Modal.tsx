@@ -1,5 +1,5 @@
 import { Button } from "./Button";
-import { AiOutlineClose } from "react-icons/ai";
+// import { AiOutlineClose } from "react-icons/ai";
 import { FC, ReactElement, useCallback } from "react";
 
 interface ModalProps {
@@ -9,7 +9,6 @@ interface ModalProps {
     disabled?: boolean;
     actionLabel: string;
     body?: ReactElement;
-    onClose: () => void;
     onSubmit: () => void;
     footer?: ReactElement;
     uploadOnClick?: any;
@@ -21,18 +20,17 @@ export const Modal: FC<ModalProps> = ({
     footer,
     upload,
     isOpen,
-    onClose,
     onSubmit,
     disabled,
     actionLabel,
     uploadOnClick
 }) => {
-    const handleClose = useCallback(() => {
-        if (disabled) {
-            return;
-        }
-        onClose();
-    }, [disabled, onClose])
+    // const handleClose = useCallback(() => {
+    //     if (disabled) {
+    //         return;
+    //     }
+    //     onClose();
+    // }, [disabled, onClose])
     const handleSubmit = useCallback(() => {
         if(disabled) {
             return;
@@ -99,7 +97,7 @@ export const Modal: FC<ModalProps> = ({
                             <h3 className="text-3xl font-semibold text-white">
                                 { title }
                             </h3>
-                            <button
+                            {/* <button
                                 onClick={handleClose}
                                 className="
                                     p-1 
@@ -111,7 +109,7 @@ export const Modal: FC<ModalProps> = ({
                                 "
                             >
                                 <AiOutlineClose size={20} />
-                            </button>
+                            </button> */}
                         </div>
                         <div className="relative p-10 flex-auto">
                             { body }
