@@ -20,7 +20,7 @@ exports.handler = async(event) => {
             password: hash
         });
         const response = await db.putItem({
-            TableName: 'Attendance',
+            TableName: 'attendance',
             Item: user
         });
         return {
