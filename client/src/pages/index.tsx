@@ -1,6 +1,7 @@
 import Webcam from "react-webcam";
 import { Button } from "@/components";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useCurrentUser } from "@/context";
 
 export default function Home() {
   const videoRef = useRef<any>(null);

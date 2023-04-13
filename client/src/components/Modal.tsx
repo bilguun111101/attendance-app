@@ -99,7 +99,7 @@ export const Modal: FC<ModalProps> = ({
                             <h3 className="text-3xl font-semibold text-white">
                                 { title }
                             </h3>
-                            <button
+                            {/* <button
                                 onClick={handleClose}
                                 className="
                                     p-1 
@@ -111,7 +111,7 @@ export const Modal: FC<ModalProps> = ({
                                 "
                             >
                                 <AiOutlineClose size={20} />
-                            </button>
+                            </button> */}
                         </div>
                         <div className="relative p-10 flex-auto">
                             { body }
