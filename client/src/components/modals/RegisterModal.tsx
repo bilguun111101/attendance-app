@@ -75,7 +75,8 @@ export const RegisterModal = () => {
         const newFile = new File([file], `${userId}.${file.name.split('.').at(-1)}`, { type: file.type });
         const response = await axios.post('https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/url', {
             Key: newFile.name,
-            ContentType: newFile.type
+            ContentType: newFile.type,
+            Bucket: "leaf3bbbilguun0426"
         });
         setUserID(userId);
         setSelectedFile(newFile);

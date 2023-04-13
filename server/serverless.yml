@@ -6,6 +6,7 @@ files:
   login: handlers/authentication/login.handler
   signup: handlers/authentication/signup.handler
   createApproachUrl: handlers/createApproachUrl.handler
+  facecompare: handlers/facecompare.handler
 
 # some variables
 some:
@@ -120,5 +121,12 @@ functions:
     events:
       - http:
           path: url
+          method: post
+          cors: true
+  facecompare:
+    handler: ${self:files.facecompare}
+    events:
+      - http:
+          path: face
           method: post
           cors: true

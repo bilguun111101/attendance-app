@@ -7,9 +7,10 @@ const Expires = 3000;
 exports.handler = async(event) => {
     const {
         Key,
+        Bucket,
         ContentType
     } = JSON.parse(event.body);
-    const Bucket = "leaf3bbbilguun0426";
+    // const Bucket = "leaf3bbbilguun0426";
 
     try {
         const params = {
