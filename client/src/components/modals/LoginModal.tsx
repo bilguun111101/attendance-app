@@ -3,10 +3,11 @@ import { Modal } from "../Modal";
 import { Input } from "../Input";
 import { toast } from "react-hot-toast";
 import { useCallback, useState } from "react";
-import { useLogInModal, useRegisterModal } from "@/hooks";
+import { useCurrentUser, useLogInModal, useRegisterModal } from "@/hooks";
 
 export const LoginModal = () => {
     const loginModal = useLogInModal();
+    const currentUser = useCurrentUser();
     const registerModal = useRegisterModal();
 
     const [email, setEmail] = useState("");
@@ -21,8 +22,8 @@ export const LoginModal = () => {
     }, [isLoading, registerModal, loginModal])
 
     const onSubmit = useCallback(async() => {
-        // if(!email || !password) {
-        //     toast.error("You must input you authentication!!!");
+        // if(email === '' || password === '') {
+        //     toast.error('You must input your authentication!!!');
         //     return;
         // }
         try {
@@ -30,9 +31,12 @@ export const LoginModal = () => {
                 method: 'POST',
                 body: JSON.stringify({ email, password })
             })
-            const data = await response.json();
-            console.log(data);
+            const { username, email: userEmail, userID } = await response.json();
+            currentUser.onUserID(userID);
+            currentUser.onEmail(userEmail);
+            currentUser.onUsername(username);
             setIsLoading(true);
+            toast.success('You signed in!!!');
             loginModal.onClose();
         } catch (error) { console.log(error) } finally {
             setIsLoading(false);
