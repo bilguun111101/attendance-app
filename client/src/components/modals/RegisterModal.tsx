@@ -133,7 +133,7 @@ export const RegisterModal = () => {
             isOpen={registerModal.isOpen}
             title='Create an account'
             actionLabel="Register"
-            onClose={registerModal.onClose}
+            // onClose={registerModal.onClose}
             onSubmit={onSubmit}
             body={bodyContent} 
             footer={footerContent}
