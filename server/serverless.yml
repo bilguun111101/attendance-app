@@ -2,11 +2,12 @@ service: server
 frameworkVersion: '3'
 
 files:
-  register: handlers/authentication/register.handler
+  attendance: handlers/attendance.handler
+  facecompare: handlers/facecompare.handler
   login: handlers/authentication/login.handler
   signup: handlers/authentication/signup.handler
+  register: handlers/authentication/register.handler
   createApproachUrl: handlers/createApproachUrl.handler
-  facecompare: handlers/facecompare.handler
 
 # some variables
 some:
@@ -128,5 +129,12 @@ functions:
     events:
       - http:
           path: face
+          method: post
+          cors: true
+  attendance:
+    handler: ${self:files.attendance}
+    events:
+      - http:
+          path: attendance
           method: post
           cors: true

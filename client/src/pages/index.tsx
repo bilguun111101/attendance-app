@@ -7,7 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const videoRef = useRef<any>(null);
-  const { userID } = useCurrentUser();
+  const { userID, email } = useCurrentUser();
   const [isRecording, setIsRecording] = useState<boolean>(false);
 
   const stopCam = useCallback(() => {
@@ -20,22 +20,36 @@ export default function Home() {
     try {
       const result = await (await fetch(imageSrc)).blob();
       const newFile = new File([result], `${userID}.${result.type.split('/').at(-1)}`, { type: result.type });
-      // console.log(newFile?.lastModifiedDate);
-      // const date = new Date();
-      // console.log(date.getHours());
-      // console.log(date.getMinutes());
-      // console.log(date);
+      const date = new Date();
       const response = await axios.post('https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/url', {
         Key: newFile?.name,
         ContentType: newFile?.type,
         Bucket: "leaf3bbbilguun0426attendance"
-      });;
-      await fetch(response.data, {
+      });
+      await fetch(response.data.url, {
         method: 'PUT',
-        body: JSON.stringify(newFile)
+        body: newFile
       })
-      toast.success("attendance is successful")
+
+      // --
+      const day = date.getDate()
+      const hour = date.getHours();
+      const month = date.getMonth() + 1;
+      const minutes = date.getMinutes();
+      const attendance = await axios.post("https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/attendance", {
+        day,
+        hour,
+        month,
+        email,
+        userID,
+        minutes,
+      });
+      // ==
+
+      setIsRecording(false);
+      toast.success(attendance.data.attendance);
     } catch (error) {
+      console.log(error)
       toast.error("Screenshot wasn't send!!!")
     }
   }, [videoRef]);
