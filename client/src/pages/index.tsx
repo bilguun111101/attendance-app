@@ -3,36 +3,38 @@ import Webcam from "react-webcam";
 import { Button } from "@/components";
 import { toast } from "react-hot-toast";
 import { useCurrentUser } from "@/context";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const videoRef = useRef<any>(null);
-  // const [screenshot, setScreenshot] = useState('');
   const { userID } = useCurrentUser();
   const [isRecording, setIsRecording] = useState<boolean>(false);
-
-  // const stopCam = () => {
-  //   let stream = videoRef.current.stream;
-  //   const tracks = stream.getTracks();
-  //   tracks.forEach((track: any) => track.stop());
-  //   setIsRecording(false);
-  // }
 
   const stopCam = useCallback(() => {
     setIsRecording(false);
   }, [isRecording])
 
   const capture = useCallback(async() => {
-    // if(!isRecording) return;
-    const imageSrc: File = videoRef.current.getScreenshot();
-    const newFile = new File([imageSrc], `${userID}.${imageSrc.name.split('.').at(-1)}`, { type: imageSrc.type });
+    if(!isRecording) return;
+    const imageSrc: any = videoRef.current.getScreenshot();
     try {
-      const { data } = await axios.post('https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/url', {
-        Key: newFile.name,
-        ContentType: newFile.type,
+      const result = await (await fetch(imageSrc)).blob();
+      const newFile = new File([result], `${userID}.${result.type.split('/').at(-1)}`, { type: result.type });
+      // console.log(newFile?.lastModifiedDate);
+      // const date = new Date();
+      // console.log(date.getHours());
+      // console.log(date.getMinutes());
+      // console.log(date);
+      const response = await axios.post('https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/url', {
+        Key: newFile?.name,
+        ContentType: newFile?.type,
         Bucket: "leaf3bbbilguun0426attendance"
       });;
-      // console.log(data);
+      await fetch(response.data, {
+        method: 'PUT',
+        body: JSON.stringify(newFile)
+      })
+      toast.success("attendance is successful")
     } catch (error) {
       toast.error("Screenshot wasn't send!!!")
     }
@@ -42,33 +44,35 @@ export default function Home() {
     setIsRecording(true);
   }, [isRecording])
 
-  const handleImage = async(target: any) => {
-    if(!target.files) return;
-    const file = target.files[0];
-    if(!file) return;
-    const newFile = new File([file], `${userID}.${file.name.split('.').at(-1)}`, { type: file.type });
-    const { data } = await axios.post('https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/url', {
-      Key: newFile.name,
-      ContentType: newFile.type,
-      Bucket: "leaf3bbbilguun0426"
-    });
-    await fetch(data, {
-      method: 'PUT',
-      body: JSON.stringify(newFile)
-    })
-    // const response = await axios.post('https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/face', {
-    //   Name: newFile.name
-    // })
-    const response = await fetch("https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/face", {
-      method: 'POST',
-      body: JSON.stringify({
-        Name: newFile.name
-      })
-    })
-    // console.log(response.json());
-    const result = await response.json();
-    console.log(result);
-};
+  // const handleImage = async(target: any) => {
+  //   if(!target.files) return;
+  //   const file = target.files[0];
+  //   if(!file) return;
+  //   const newFile = new File([file], `${userID}.${file.name.split('.').at(-1)}`, { type: file.type });
+  //   const { data } = await axios.post('https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/url', {
+  //     Key: newFile.name,
+  //     ContentType: newFile.type,
+  //     Bucket: "leaf3bbbilguun0426"
+  //   });
+  //   await fetch(data, {
+  //     method: 'PUT',
+  //     body: JSON.stringify(newFile)
+  //   })
+  //   // const response = await axios.post('https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/face', {
+  //   //   Name: newFile.name
+  //   // })
+  //   const response = await fetch("https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/face", {
+  //     method: 'POST',
+  //     body: JSON.stringify({
+  //       Name: newFile.name
+  //     })
+  //   })
+  //   const result = await response.json();
+  //   console.log(result);
+  // };
+  // useEffect(() => {
+  //   console.log(userID)
+  // }, [userID])
 
   return (
     <section className="w-full h-screen p-3">
@@ -85,7 +89,7 @@ export default function Home() {
               <div className="flex gap-4 flex-wrap justify-center">
                   <Button label={isRecording ? "stop cam" : 'open cam'} onClick={isRecording ? stopCam : openCam} secondary={true} />
                   <Button label="screenshot" onClick={capture} secondary={true} />
-                  <input type="file" onChange={({ target }) => handleImage(target)} />
+                  {/* <input type="file" onChange={({ target }) => handleImage(target)} /> */}
               </div>
           </div>
       </div>
