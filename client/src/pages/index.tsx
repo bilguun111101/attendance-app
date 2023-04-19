@@ -15,13 +15,13 @@ export default function Home() {
   }, [isRecording])
 
   const capture = useCallback(async() => {
-    if(!isRecording) return;
+    // if(!isRecording) return;
     const imageSrc: any = videoRef.current.getScreenshot();
     try {
       const result = await (await fetch(imageSrc)).blob();
       const newFile = new File([result], `${userID}.${result.type.split('/').at(-1)}`, { type: result.type });
       const date = new Date();
-      const response = await axios.post('https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/url', {
+      const response = await axios.post('https://9el95rywh4.execute-api.us-east-1.amazonaws.com/dev/url', {
         Key: newFile?.name,
         ContentType: newFile?.type,
         Bucket: "leaf3bbbilguun0426attendance"
@@ -30,13 +30,17 @@ export default function Home() {
         method: 'PUT',
         body: newFile
       })
+      // const facecompare = await axios.get('https://9el95rywh4.execute-api.us-east-1.amazonaws.com/dev/face');
+      const facecompare = await axios.post('https://9el95rywh4.execute-api.us-east-1.amazonaws.com/dev/face', { Name: `${userID}.webp` })
+
+      console.log(facecompare.data);
 
       // --
       const day = date.getDate()
       const hour = date.getHours();
       const month = date.getMonth() + 1;
       const minutes = date.getMinutes();
-      const attendance = await axios.post("https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/attendance", {
+      const attendance = await axios.post("https://9el95rywh4.execute-api.us-east-1.amazonaws.com/dev/attendance", {
         day,
         hour,
         month,

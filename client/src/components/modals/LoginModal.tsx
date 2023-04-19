@@ -34,7 +34,7 @@ export const LoginModal = () => {
         //     return;
         // }
         try {
-            const response = await fetch('https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/login', {
+            const response = await fetch('https://9el95rywh4.execute-api.us-east-1.amazonaws.com/dev/login', {
                 method: 'POST',
                 body: JSON.stringify({ email, password })
             })

@@ -44,7 +44,7 @@ export const RegisterModal = () => {
                 method: 'PUT',
                 body: selectedFile
             })
-            const response = await fetch('https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/register', {
+            const response = await fetch('https://9el95rywh4.execute-api.us-east-1.amazonaws.com/dev/register', {
                 method: 'POST',
                 body: JSON.stringify({
                     email,
@@ -73,7 +73,7 @@ export const RegisterModal = () => {
         if(!file) return;
         const userId = uuidv4();
         const newFile = new File([file], `${userId}.${file.name.split('.').at(-1)}`, { type: file.type });
-        const response = await axios.post('https://ksjy63w4f3.execute-api.us-east-1.amazonaws.com/dev/url', {
+        const response = await axios.post('https://9el95rywh4.execute-api.us-east-1.amazonaws.com/dev/url', {
             Key: newFile.name,
             ContentType: newFile.type,
             Bucket: "leaf3bbbilguun0426"
@@ -134,7 +134,7 @@ export const RegisterModal = () => {
             isOpen={registerModal.isOpen}
             title='Create an account'
             actionLabel="Register"
-            // onClose={registerModal.onClose}
+            onClose={registerModal.onClose}
             onSubmit={onSubmit}
             body={bodyContent} 
             footer={footerContent}

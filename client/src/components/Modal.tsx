@@ -10,6 +10,7 @@ interface ModalProps {
     actionLabel: string;
     body?: ReactElement;
     onSubmit: () => void;
+    onClose: () => void;
     footer?: ReactElement;
     uploadOnClick?: any;
 }
